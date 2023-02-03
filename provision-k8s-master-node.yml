@@ -1,0 +1,6 @@
+- name: 'Provision k8s master node'
+  hosts: localhost
+  become: true
+
+  tasks:
+    # ...
