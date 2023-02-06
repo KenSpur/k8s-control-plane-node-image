@@ -3,4 +3,44 @@
   become: true
 
   tasks:
-    # ...
+    - name: Install containerd
+      apt:
+        name: containerd
+        state: present
+      tags: [ system ]
+
+    - name: Add GPG key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+      tags: [ system ]
+
+    - name: Add kubernetes repository to sources.list
+      lineinfile:
+        path: /etc/apt/sources.list.d/kubernetes.list
+        line: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+        state: present
+      tags: [ system ]
+
+    - name: Update apt cache after adding kubernetes repository
+      apt: update_cache=yes
+      tags: [ system ]
+    
+    - name: Install kubernetes Packages
+      apt:
+        pkg:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+      tags: [ system ]
+
+    - name: Mark packages as held
+      apt:
+        pkg:
+          - containerd
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: held
+      tags: [ system ]
