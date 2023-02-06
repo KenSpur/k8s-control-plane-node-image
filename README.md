@@ -1,4 +1,4 @@
-# 🖼️ k8s-master-node-image
+# 🖼️ k8s-control-plane-node-image
 
 ## 🛠️ Technologies used
 - [Packer](https://www.packer.io/) Image creation tool
