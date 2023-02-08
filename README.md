@@ -6,3 +6,6 @@
 
 ## 🎯 Targets
 - [Proxmox](https://www.proxmox.com/en/proxmox-ve) Software server for virtualization management
+
+## 👏 Credits
+[Anthony Nocentino](https://app.pluralsight.com/library/courses/kubernetes-installation-configuration-fundamentals)
