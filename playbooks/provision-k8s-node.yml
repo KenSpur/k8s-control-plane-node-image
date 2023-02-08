@@ -49,40 +49,70 @@
       command: swapoff -a
 
   # # Configure containerd
-  #   - name: Load overlay module
-  #     command: modprobe overlay
+    - name: Load overlay module
+      command: modprobe overlay
 
-  #   - name: Load br_netfilter module
-  #     command: modprobe br_netfilter
+    - name: Load br_netfilter module
+      command: modprobe br_netfilter
 
-  #   - name: Add containerd modules to /etc/modules-load.d/containerd.conf
-  #     ini_file:
-  #       path: /etc/modules-load.d/containerd.conf
-  #       section: containerd
-  #       option: modules
-  #       value: "overlay br_netfilter"
-  #       create: yes
+    - name: Add containerd modules to /etc/modules-load.d/containerd.conf
+      ini_file:
+        path: /etc/modules-load.d/containerd.conf
+        section: containerd
+        option: modules
+        value: |
+          overlay
+          br_netfilter
+        create: yes
 
-  #   - name: Set sysctl options for Kubernetes CRI
-  #     ini_file:
-  #       path: /etc/sysctl.d/99-kubernetes-cri.conf
-  #       section: kubernetes_cri
-  #       option: net.bridge.bridge-nf-call-iptables
-  #       value: 1
-  #       create: yes
+    - name: Set sysctl options for Kubernetes CRI
+      ini_file:
+        path: /etc/sysctl.d/99-kubernetes-cri.conf
+        section: kubernetes_cri
+        option: net.bridge.bridge-nf-call-iptables
+        value: 1
+        create: yes
 
-  #   - name: Set sysctl options for Kubernetes CRI
-  #     ini_file:
-  #       path: /etc/sysctl.d/99-kubernetes-cri.conf
-  #       section: kubernetes_cri
-  #       option: net.ipv4.ip_forward
-  #       value: 1
-  #       create: yes
+    - name: Set sysctl options for Kubernetes CRI
+      ini_file:
+        path: /etc/sysctl.d/99-kubernetes-cri.conf
+        section: kubernetes_cri
+        option: net.ipv4.ip_forward
+        value: 1
+        create: yes
 
-  #   - name: Set sysctl options for Kubernetes CRI
-  #     ini_file:
-  #       path: /etc/sysctl.d/99-kubernetes-cri.conf
-  #       section: kubernetes_cri
-  #       option: net.bridge.bridge-nf-call-ip6tables
-  #       value: 1
-  #       create: yes
+    - name: Set sysctl options for Kubernetes CRI
+      ini_file:
+        path: /etc/sysctl.d/99-kubernetes-cri.conf
+        section: kubernetes_cri
+        option: net.bridge.bridge-nf-call-ip6tables
+        value: 1
+        create: yes
+
+    - name: Apply sysctl params without reboot
+      command: sysctl --system
+
+    - name: Create a containerd configuration directory
+      file:
+        path: /etc/containerd
+        state: directory
+
+    - name: Create a containerd configuration file
+      command: containerd config default
+      register: containerd_config
+
+    - name: Write containerd config to file
+      copy:
+        content: "{{ containerd_config.stdout }}"
+        dest: /etc/containerd/config.toml
+
+    - name: Enable SystemdCgroup in containerd config
+      replace:
+        path: /etc/containerd/config.toml
+        regexp: '^            SystemdCgroup = false$'
+        replace: '            SystemdCgroup = true'
+
+    - name: Restart containerd service
+      service:
+        name: containerd
+        state: restarted
