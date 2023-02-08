@@ -1,0 +1,88 @@
+- name: 'Provision k8s master node'
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Install containerd
+      apt:
+        name: containerd
+        state: present
+      tags: [ system ]
+
+    - name: Add GPG key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+      tags: [ system ]
+
+    - name: Add the Kubernetes repository
+      apt_repository:
+        repo: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
+        state: present
+      tags: [ system ]
+
+    - name: Update apt cache after adding kubernetes repository
+      apt:
+        update_cache: yes
+      tags: [ system ]
+    
+    - name: Install kubernetes Packages
+      apt:
+        pkg:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+      tags: [ system ]
+
+    - name: Mark services as held
+      shell: |
+        apt-mark hold {{ item }}
+      with_items:
+        - containerd
+        - kubelet
+        - kubeadm
+        - kubectl
+      tags: [system]
+
+    - name: Disable swap memory
+      command: swapoff -a
+
+  # # Configure containerd
+  #   - name: Load overlay module
+  #     command: modprobe overlay
+
+  #   - name: Load br_netfilter module
+  #     command: modprobe br_netfilter
+
+  #   - name: Add containerd modules to /etc/modules-load.d/containerd.conf
+  #     ini_file:
+  #       path: /etc/modules-load.d/containerd.conf
+  #       section: containerd
+  #       option: modules
+  #       value: "overlay br_netfilter"
+  #       create: yes
+
+  #   - name: Set sysctl options for Kubernetes CRI
+  #     ini_file:
+  #       path: /etc/sysctl.d/99-kubernetes-cri.conf
+  #       section: kubernetes_cri
+  #       option: net.bridge.bridge-nf-call-iptables
+  #       value: 1
+  #       create: yes
+
+  #   - name: Set sysctl options for Kubernetes CRI
+  #     ini_file:
+  #       path: /etc/sysctl.d/99-kubernetes-cri.conf
+  #       section: kubernetes_cri
+  #       option: net.ipv4.ip_forward
+  #       value: 1
+  #       create: yes
+
+  #   - name: Set sysctl options for Kubernetes CRI
+  #     ini_file:
+  #       path: /etc/sysctl.d/99-kubernetes-cri.conf
+  #       section: kubernetes_cri
+  #       option: net.bridge.bridge-nf-call-ip6tables
+  #       value: 1
+  #       create: yes

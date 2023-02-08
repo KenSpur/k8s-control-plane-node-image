@@ -24,3 +24,9 @@ variable "ssh_username" {
   type    = string
   default = "root"
 }
+
+variable "ssh_key" {
+  type      = string
+  default   = ""
+  sensitive = true
+}
