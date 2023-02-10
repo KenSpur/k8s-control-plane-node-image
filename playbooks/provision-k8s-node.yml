@@ -39,7 +39,7 @@
     - name: Install Packages
       apt:
         pkg:
-          - containerd
+          - containerd.io
           - kubelet
           - kubeadm
           - kubectl
