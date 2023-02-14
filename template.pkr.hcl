@@ -61,7 +61,7 @@ source "proxmox" "ubuntu-server-22-04-lts" {
 
   disks {
     type              = "scsi"
-    disk_size         = "32G"
+    disk_size         = "100G"
     storage_pool      = "local-lvm"
     storage_pool_type = "lvm"
     format            = "raw"
