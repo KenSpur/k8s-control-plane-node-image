@@ -39,10 +39,10 @@
     - name: Install Packages
       apt:
         pkg:
-          - containerd.io
-          - kubelet
-          - kubeadm
-          - kubectl
+          - containerd.io={{ ctrd_version }}
+          - kubelet={{ kube_version }}
+          - kubeadm={{ kube_version }}
+          - kubectl={{ kube_version }}
         state: present
       tags: [ system ]
 

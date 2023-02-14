@@ -30,3 +30,13 @@ variable "ssh_key" {
   default   = ""
   sensitive = true
 }
+
+// versioning
+variable "ctrd_version" {
+  type    = string
+  default = "1.6.*"
+}
+variable "kube_version" {
+  type    = string
+  default = "1.26.*"
+}

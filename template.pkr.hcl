@@ -141,7 +141,10 @@ build {
   # run ansible playbook
   provisioner "ansible-local" {
     playbook_file   = "./playbooks/provision-k8s-node.yml"
-    extra_arguments = []
+    extra_arguments = [      
+       "-e", "ctrd_version=${var.ctrd_version}",
+       "-e", "kube_version=${var.kube_version}"
+    ]
   }
 
   # cleanups
