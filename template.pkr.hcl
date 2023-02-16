@@ -164,10 +164,11 @@ build {
       "sudo apt-get -y autoclean",
       "sudo cloud-init clean",
       "sudo rm /etc/ssh/ssh_host_*",
-      "sudo rm -rf /etc/netplan/00-installer-config.yaml",
-      "sudo rm -rf /etc/cloud/cloud.cfg.d/99-installer.cfg",
-      "sudo rm -rf /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg",
+      "sudo rm -f /etc/netplan/00-installer-config.yaml",
+      "sudo rm -f /etc/cloud/cloud.cfg.d/99-installer.cfg",
+      "sudo rm -f /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg",
       "sudo truncate -s 0 /etc/machine-id",
+      "sudo truncate -s 0 /var/lib/dbus/machine-id",
       "sudo sync"
     ]
   }
